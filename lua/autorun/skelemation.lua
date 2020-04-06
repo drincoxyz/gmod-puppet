@@ -128,7 +128,6 @@ hook.Add("UpdateAnimation", "skelemation", function(pl)
 	local lastAnim = pl:GetLastAnimationModel()
 
 	if anim != lastAnim then
-		print'succ'
 		pl:UpdateActivityList()
 		pl:SetLastAnimationModel(anim)
 	end
