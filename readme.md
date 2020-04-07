@@ -1,4 +1,4 @@
-# gmod-puppeteer
+# gmod-puppet
 
 This modifies the traditional player animation system in Garry's Mod to separate players into their own visual (puppet) and animation (puppeteer) models.
 
