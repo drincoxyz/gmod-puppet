@@ -3,6 +3,51 @@ local Entity = FindMetaTable "Entity"
 
 Player._CreateRagdoll = Player._CreateRagdoll or Player.CreateRagdoll
 
+function Player:GetBodyGroups()
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:GetBodyGroups() or Entity.GetBodyGroups(self)
+end
+
+function Player:GetBodygroup(id)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:GetBodygroup(id) or Entity.GetBodygroup(self, id)
+end
+
+function Player:GetBodygroupCount(id)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:GetBodygroupCount(id) or Entity.GetBodygroupCount(self, id)
+end
+
+function Player:GetBodygroupName(id)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:GetBodygroupName(id) or Entity.GetBodygroupName(self, id)
+end
+
+function Player:GetNumBodyGroups()
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:GetNumBodyGroups() or Entity.GetNumBodyGroups(self)
+end
+
+function Player:FindBodygroupByName(name)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:FindBodygroupByName(name) or Entity.FindBodygroupByName(self, name)
+end
+
+function Player:SetBodygroup(id, val)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:SetBodygroup(id, val) or Entity.SetBodygroup(self, id, val)
+end
+
+function Player:SetBodyGroups(str)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:SetBodyGroups(str) or Entity.SetBodyGroups(self, str)
+end
+
+function Player:SetBodyGroups(str)
+	local puppet = self:GetPuppetEntity()
+	return IsValid(puppet) and puppet:SetBodyGroups(str) or Entity.SetBodyGroups(self, str)
+end
+
 function Player:CreateRagdoll()
 	self:_CreateRagdoll()
 
