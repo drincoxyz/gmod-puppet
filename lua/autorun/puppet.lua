@@ -1,8 +1,18 @@
 local Player = FindMetaTable "Player"
 local Entity = FindMetaTable "Entity"
 
-Player._SetModel = Player._SetModel or Entity.SetModel
-Player._GetModel = Player._GetModel or Entity.GetModel
+Player._CreateRagdoll = Player._CreateRagdoll or Player.CreateRagdoll
+
+function Player:CreateRagdoll()
+	self:_CreateRagdoll()
+
+	local rag = self:GetRagdollEntity()
+
+	if IsValid(rag) then
+		rag:SetModel(self:GetModel())
+		rag:Spawn()
+	end
+end
 
 function Player:SetModel(mdl)
 	self:SetNW2String("visualModel", mdl)
@@ -21,7 +31,67 @@ end
 	[1] string - Animation model.
 ]]
 function Player:SetAnimationModel(mdl)
-	self:_SetModel(mdl)
+	Entity.SetModel(self, mdl)
+end
+
+--[[
+	Name: Player:GetAnimationModel
+	Desc: Returns the player's animation model.
+
+	Returns
+
+	[1] string - Animation model.
+]]
+function Player:GetAnimationModel()
+	return Entity.GetModel(self)
+end
+
+--[[
+	Name: Player:SetLastAnimationModel
+	Desc: Sets the player's last animation model.
+
+	Arguments
+
+	[1] string - Last animation model.
+]]
+function Player:SetLastAnimationModel(anim)
+	self.lastAnimMdl = anim
+end
+
+--[[
+	Name: Player:GetLastAnimationModel
+	Desc: Returns the player's last animation model.
+
+	Returns
+
+	[1] string - Last animation model.
+]]
+function Player:GetLastAnimationModel()
+	return self.lastAnimMdl
+end
+
+--[[
+	Name: Player:SetPuppetEntity
+	Desc: Sets the player's puppet entity.
+
+	Arguments
+
+	[1] Entity - Puppet entity.
+]]
+function Player:SetPuppetEntity(ent)
+	self:SetNW2Entity("puppetEnt", ent)
+end
+
+--[[
+	Name: Player:GetPuppetEntity
+	Desc: Returns the player's puppet entity.
+
+	Returns
+
+	[1] Entity - Puppet entity.
+]]
+function Player:GetPuppetEntity()
+	return self:GetNW2Entity "puppetEnt"
 end
 
 --[[
@@ -87,45 +157,19 @@ function Player:LookupActivity(actName)
 	return self:GetActivityLookup()[actName] or -1
 end
 
---[[
-	Name: Player:GetAnimationModel
-	Desc: Returns the player's animation model.
-
-	Returns
-
-	[1] string - Animation model.
-]]
-function Player:GetAnimationModel()
-	return self:_GetModel()
-end
-
---[[
-	Name: Player:GetLastAnimationModel
-	Desc: Returns the player's last animation model.
-
-	Returns
-
-	[1] string - Last animation model.
-]]
-function Player:GetLastAnimationModel()
-	return self.lastAnimMdl
-end
-
---[[
-	Name: Player:SetLastAnimationModel
-	Desc: Sets the player's last animation model.
-
-	Arguments
-
-	[1] string - Last animation model.
-]]
-function Player:SetLastAnimationModel(anim)
-	self.lastAnimMdl = anim
-end
-
-hook.Add("UpdateAnimation", "skelemation", function(pl)
+hook.Add("UpdateAnimation", "puppet", function(pl)
 	local anim     = pl:GetAnimationModel()
 	local lastAnim = pl:GetLastAnimationModel()
+	local puppet   = pl:GetPuppetEntity()
+
+	if SERVER and !IsValid(puppet) then
+		puppet = ents.Create "anim_puppet"
+
+		if IsValid(puppet) then
+			puppet:SetOwner(pl)
+			puppet:Spawn()
+		end
+	end
 
 	if anim != lastAnim then
 		pl:UpdateActivityList()
