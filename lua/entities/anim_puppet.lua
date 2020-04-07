@@ -26,13 +26,18 @@ end
 function ENT:Draw()
 	local owner = self:GetOwner()
 
-	if IsValid(owner) and owner:Alive() and !owner:IsDormant() then
-		local ownerEyeAng = owner:EyeAngles()
-		local ownerEyeDir = ownerEyeAng:Forward()
-		local eyePos      = self:EyePos()
-
-		self:DrawModel()
-		self:SetEyeTarget(Vector(256, 0, 72))
+	if IsValid(owner) then
+		if owner:Alive() and !owner:IsDormant() and !owner:IsEffectActive(EF_NODRAW) and owner:ShouldDrawLocalPlayer() then
+			local ownerEyeAng = owner:EyeAngles()
+			local ownerEyeDir = ownerEyeAng:Forward()
+			local eyePos      = self:EyePos()
+	
+			self:DrawModel()
+			self:CreateShadow()
+			self:SetEyeTarget(Vector(256, 0, 72))
+		else
+			self:DestroyShadow()
+		end
 	end
 end
 
